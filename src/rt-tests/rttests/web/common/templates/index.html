@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script>
+    (function(){
+
+      function createClient(){
+        var sock = new WebSocket("ws://localhost:8888/websocket");
+
+        function randomString(n) {
+          var text = "";
+          var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          for(var i=0; i < n; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+          }
+          return text;
+        }
+
+        sock.onopen = function(event){
+          setInterval(function(){
+            var message = randomString(8);
+            console.log('Sending: "' + message + '"');
+            sock.send(message);
+          }, 1000 + (Math.random() * 2000));
+        };
+
+        sock.onmessage = function (event) {
+          console.log(event.data)
+        };
+      }
+
+      for(var i = 0; i < 10; i++){
+        createClient();
+      }
+
+    }());
+  </script>
+</head>
+<body>
+  <h1>Check the console.</h1>
+</body>
+</html>
